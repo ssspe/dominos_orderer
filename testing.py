@@ -3,33 +3,10 @@ import time
 
 from selenium import webdriver
 
-def custom_web_driver(url_number, download_path=""):
-    """
-    Sets up a Chromium web driver to connect to a custom url
-
-    :param url_number: The url to connect to
-    :param download_path: The download path of the chrome web driver
-    :return: Returns the web driver instance
-    """
-
-    # Setting the preferences of the chrome driver
-    logging.info(f"Connecting to {url_number} using the Chrome Selenium webdriver.")
-    prefs = {'download.default_directory': download_path}
-    moreprefs = {'safebrowsing.enabled': True}
-    prefs.update(moreprefs)
-
-    # Setting the options of the chrome browser
-    opts = webdriver.ChromeOptions()
-    opts.add_experimental_option('prefs', prefs)
-    opts.add_argument('--safebrowsing-disable-download-protection')
-    opts.add_argument("start-maximized")
-
-    driver = webdriver.Chrome(options=opts)
-
+def firefox_web_driver(url_number):
+    driver = webdriver.Firefox()
     web = driver
     web.get(url_number)
-    logging.info(f"Connected to {url_number}.")
-
     return web
 
 def click_topping(webdriver, topping):
@@ -89,7 +66,7 @@ def start():
     my_pizza = ["Ham & Pineapple", "Original Cheese & Tomato"]
     customise = True
 
-    webdriver = custom_web_driver("https://www.dominos.co.uk/menu")
+    webdriver = firefox_web_driver("https://www.dominos.co.uk/menu")
     webdriver.find_element_by_id("search-input").send_keys("BA147FP")
     webdriver.find_element_by_id("btn-delivery").click()
 
@@ -108,9 +85,6 @@ def start():
             print("Customizing pizza!")
 
             if pizza in pizza_index.keys():
-                print(pizza)
-                print(pizza_index.keys())
-                print(len(webdriver.find_elements_by_xpath("//button[@resource-name='Customise']")))
                 webdriver.find_elements_by_xpath("//button[@resource-name='Customise']")[pizza_index[pizza]].click()
 
             time.sleep(5)
