@@ -1,7 +1,7 @@
 {
     "pizzas": [
-        {"name": "Ham & Pineapple", "type": "half", "customise": 1, "customisation": {"extra": ["Ham"], "remove": ["Pineapple"]}},
-        {"name": "Ham & Pineapple", "type": "half", "customise": 1, "customisation": {"extra": ["Sweetcorn"], "remove": ["Pineapple"]}},
-        {"name": "Ham & Pineapple", "type": "full", "customise": 1, "customisation": {"extra": ["Sweetcorn", "Jalapeno Peppers"], "remove": [""]}}
+        {"name": "Hawaiian", "type": "half", "customise": 1, "customisation": {"extra": ["Ham"], "remove": ["Pineapple"]}},
+        {"name": "Hawaiian", "type": "half", "customise": 1, "customisation": {"extra": ["Sweetcorn"], "remove": ["Pineapple"]}},
+        {"name": "Hawaiian", "type": "full", "customise": 1, "customisation": {"extra": ["Sweetcorn", "Jalapeno Peppers"], "remove": [""]}}
         ]
 }

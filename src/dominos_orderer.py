@@ -7,12 +7,10 @@ POSTCODE = "BA147FP"
 DOMINOS_WEBSITE = "https://www.dominos.co.uk/menu"
 HALF_AND_HALF = "Torn between two pizzas"
 
-
 def click_topping(webdriver, topping):
     """
     Clicks a topping on the customisation page
 
-    :input webdriver: The selenium webdriver
     :input topping: The topping to click
     :return: Boolean if the click was successful
     """
@@ -30,7 +28,6 @@ def customise_pizza(webdriver, pizza_index, pizza, resource_name):
     """
     Makes customisations to the pizza.
 
-    :param webdriver: The selenium webdriver
     :param extra_topping: Toppings that want adding
     :param remove_topping: Toppings that want removing
     """
@@ -53,10 +50,17 @@ def customise_pizza(webdriver, pizza_index, pizza, resource_name):
         logging.info(f"Removed {topping} from the pizza.")
 
     if not is_customised:
-        # For some reason dominos has an overlay that stops selenium from working 50% of the time
-        logging.warning("Error with dominos, trying again.")
-        webdriver.close()
-        process_pizza_json()
+        error_restart(webdriver)
+
+def error_restart(webdriver):
+    """
+    Restarts the program after an error, not the cleanest solution but it works
+    """
+
+    # For some reason dominos has an overlay that stops selenium from working 20% of the time
+    logging.warning("Error with dominos, trying again.")
+    webdriver.close()
+    process_pizza_json(webdriver)
 
 
 def dominos_homepage(webdriver):
@@ -66,26 +70,34 @@ def dominos_homepage(webdriver):
     :param webdriver: The selenium webdriver
     """
 
-    webdriver.find_element_by_id("search-input").send_keys(POSTCODE)
-    webdriver.find_element_by_id("btn-delivery").click()
-
-    wait_for_page_load(webdriver, "//span[text()='Browse our menu']")
-    webdriver.find_element_by_xpath("//span[text()='Browse our menu']").click()
+    wait_for_page_load(webdriver, "//a[@id='menu-selector']")
+    webdriver.find_element_by_xpath("//a[@id='menu-selector']").click()
 
     wait_for_page_load(webdriver, "//span[text()='Speciality Pizzas']")
 
 
-def process_pizza_json():
+def login(func):
+    def wrapper(webdriver):
+        webdriver = firefox_web_driver(DOMINOS_WEBSITE)
+        webdriver.find_element_by_xpath("//a[text()='Login']").click()
+        wait_for_page_load(webdriver, "//label[text()='Email address']")
+        webdriver.find_element_by_xpath("//input[@name='email']").send_keys(input("Email: "))
+        webdriver.find_element_by_xpath("//input[@name='password']").send_keys(input("Password: "))
+        webdriver.find_element_by_xpath("//button[text()='Login']").click()
+        func(webdriver)
+    return wrapper
+
+@login
+def process_pizza_json(webdriver):
     """
     Processes the 'pizza' json and order's the pizza
     """
 
     first_half = True
+    dominos_homepage(webdriver)
+
     with open("pizza.json", "r") as read_file:
         data = json.load(read_file)
-
-    webdriver = firefox_web_driver(DOMINOS_WEBSITE)
-    dominos_homepage(webdriver)
 
     for pizza in data['pizzas']:
         if pizza['type'] == 'full':
@@ -127,13 +139,15 @@ def process_pizza_json():
                     customise_pizza(webdriver, pizza_index, pizza, "Choose")
 
             if first_half:
-                wait_for_page_load(webdriver, "//button[text()='Add To Order']")
-                time.sleep(1)
-                webdriver.find_element_by_xpath("//button[text()='Add To Order']").click()
+                try:
+                    time.sleep(1)
+                    webdriver.find_element_by_xpath("//button[text()='Add To Order']").click()
+                except:
+                    error_restart(webdriver)
 
-    time.sleep(100)
+    input("You're all done here, just pay for your food then you can close the window!")
 
 
 if __name__ == "__main__":
     logging.basicConfig(filename='example.log', level=logging.DEBUG)
-    process_pizza_json()
+    process_pizza_json("")
