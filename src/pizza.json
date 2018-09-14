@@ -1,0 +1,6 @@
+{
+    "pizzas": [
+        {"name": "Ham & Pineapple", "customise": 1, "customisation": {"extra": ["Ham"], "remove": ["Pineapple"]}},
+        {"name": "Ham & Pineapple", "customise": 1, "customisation": {"extra": ["Sweetcorn"], "remove": ["Pineapple"]}}
+        ]
+}

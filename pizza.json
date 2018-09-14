@@ -1,8 +1,0 @@
-{
-    "name": "Ham & Pineapple",
-    "customise": 1,
-    "customisation": {
-        "extra": ["Ham"],
-        "remove": ["Pineapple"]
-    }
-}
