@@ -1,4 +1,4 @@
-import logging
+import json
 import time
 
 from selenium import webdriver
@@ -19,11 +19,13 @@ def click_topping(webdriver, topping):
 
 def customise_pizza(webdriver, extra_topping, remove_topping):
     for topping in extra_topping:
+        print(topping)
         if not click_topping(webdriver, topping):
             return False
         print(f"Added {topping} to the pizza.")
 
     for topping in remove_topping:
+        print(topping)
         for clicks in range(2):
             if not click_topping(webdriver, topping):
                 return False
@@ -63,8 +65,8 @@ def wait_for_page_load(webdriver, finder, set_timeout=60):
             continue
 
 def start():
-    my_pizza = ["Ham & Pineapple", "Original Cheese & Tomato"]
-    customise = True
+    with open("pizza.json", "r") as read_file:
+        data = json.load(read_file)
 
     webdriver = firefox_web_driver("https://www.dominos.co.uk/menu")
     webdriver.find_element_by_id("search-input").send_keys("BA147FP")
@@ -80,24 +82,22 @@ def start():
     for index, pizza in enumerate(pizzas):
         pizza_index[pizza.text] = index
 
-    for pizza in my_pizza:
-        if customise:
-            print("Customizing pizza!")
+    if data['customise']:
+        print(f"Customizing pizza {data['name']}!")
 
-            if pizza in pizza_index.keys():
-                webdriver.find_elements_by_xpath("//button[@resource-name='Customise']")[pizza_index[pizza]].click()
+        if data['name'] in pizza_index.keys():
+            webdriver.find_elements_by_xpath("//button[@resource-name='Customise']")[pizza_index[data['name']]].click()
 
-            time.sleep(5)
-            is_customised = customise_pizza(webdriver, ["Mushrooms", "Sweetcorn"], ["Pineapple"])
+            wait_for_page_load(webdriver, "//span[text()='Chicken Breast Strips']")
+            is_customised = customise_pizza(webdriver, data['customisation']['extra'], data['customisation']['remove'])
             if not is_customised:
                 webdriver.close()
                 start()
-        else:
-            if pizza in pizza_index.keys():
-                webdriver.find_elements_by_xpath("//button[@resource-name='AddToBasket']")[pizza_index[pizza]].click()
+    else:
+        if data['name'] in pizza_index.keys():
+            webdriver.find_elements_by_xpath("//button[@resource-name='AddToBasket']")[pizza_index[data['name']]].click()
 
-        webdriver.find_element_by_xpath("//a[@class='logo']").click()
-        time.sleep(5)
+    wait_for_page_load(webdriver, "//span[text()='Speciality Pizzas']")
     time.sleep(100)
 
 
