@@ -1,60 +1,34 @@
-import logging
+import json
 import time
 
 from selenium import webdriver
 
-def custom_web_driver(url_number, download_path=""):
-    """
-    Sets up a Chromium web driver to connect to a custom url
-
-    :param url_number: The url to connect to
-    :param download_path: The download path of the chrome web driver
-    :return: Returns the web driver instance
-    """
-
-    # Setting the preferences of the chrome driver
-    logging.info(f"Connecting to {url_number} using the Chrome Selenium webdriver.")
-    prefs = {'download.default_directory': download_path}
-    moreprefs = {'safebrowsing.enabled': True}
-    prefs.update(moreprefs)
-
-    # Setting the options of the chrome browser
-    opts = webdriver.ChromeOptions()
-    opts.add_experimental_option('prefs', prefs)
-    opts.add_argument('--safebrowsing-disable-download-protection')
-    opts.add_argument("start-maximized")
-
-    driver = webdriver.Chrome(options=opts)
-
+def firefox_web_driver(url_number):
+    driver = webdriver.Firefox()
     web = driver
     web.get(url_number)
-    logging.info(f"Connected to {url_number}.")
-
     return web
 
 def click_topping(webdriver, topping):
     try:
         webdriver.find_element_by_xpath(f"//span[text()='{topping}']").click()
+        return True
     except:
         print("Cant find Topping")
+        return False
 
 def customise_pizza(webdriver, extra_topping, remove_topping):
     for topping in extra_topping:
-        try:
-            webdriver.find_element_by_xpath(f"//span[text()='{topping}']").click()
-        except:
+        print(topping)
+        if not click_topping(webdriver, topping):
             return False
         print(f"Added {topping} to the pizza.")
 
     for topping in remove_topping:
-        try:
-            webdriver.find_element_by_xpath(f"//span[text()='{topping}']").click()
-        except:
-            return False
-        try:
-            webdriver.find_element_by_xpath(f"//span[text()='{topping}']").click()
-        except:
-            return False
+        print(topping)
+        for clicks in range(2):
+            if not click_topping(webdriver, topping):
+                return False
         print(f"Removed {topping} from the pizza.")
 
     # Sometimes an overlay can block the button so try it twice
@@ -90,11 +64,11 @@ def wait_for_page_load(webdriver, finder, set_timeout=60):
                 assert False, f"Timed out waiting for element: {finder}"
             continue
 
-if __name__ == "__main__":
-    my_pizza = "Ham & Pineapple"
-    customise = True
+def start():
+    with open("pizza.json", "r") as read_file:
+        data = json.load(read_file)
 
-    webdriver = custom_web_driver("https://www.dominos.co.uk/menu")
+    webdriver = firefox_web_driver("https://www.dominos.co.uk/menu")
     webdriver.find_element_by_id("search-input").send_keys("BA147FP")
     webdriver.find_element_by_id("btn-delivery").click()
 
@@ -108,18 +82,24 @@ if __name__ == "__main__":
     for index, pizza in enumerate(pizzas):
         pizza_index[pizza.text] = index
 
-    if customise:
-        print("Customizing pizza!")
+    if data['customise']:
+        print(f"Customizing pizza {data['name']}!")
 
-        if my_pizza in pizza_index.keys():
-            webdriver.find_elements_by_xpath("//button[@resource-name='Customise']")[pizza_index[my_pizza]].click()
+        if data['name'] in pizza_index.keys():
+            webdriver.find_elements_by_xpath("//button[@resource-name='Customise']")[pizza_index[data['name']]].click()
 
-        time.sleep(5)
-        did_customise = customise_pizza(webdriver, ["Mushrooms", "Sweetcorn"], ["Pineapple"])
-        if not did_customise:
-            customise_pizza(webdriver, ["Mushrooms", "Sweetcorn"], ["Pineapple"])
+            wait_for_page_load(webdriver, "//span[text()='Chicken Breast Strips']")
+            is_customised = customise_pizza(webdriver, data['customisation']['extra'], data['customisation']['remove'])
+            if not is_customised:
+                webdriver.close()
+                start()
     else:
-        if my_pizza in pizza_index.keys():
-            webdriver.find_elements_by_xpath("//button[@resource-name='AddToBasket']")[pizza_index[my_pizza]].click()
+        if data['name'] in pizza_index.keys():
+            webdriver.find_elements_by_xpath("//button[@resource-name='AddToBasket']")[pizza_index[data['name']]].click()
+
+    wait_for_page_load(webdriver, "//span[text()='Speciality Pizzas']")
     time.sleep(100)
 
+
+if __name__ == "__main__":
+    start()
