@@ -2,6 +2,8 @@
     "pizzas": [
         {"name": "Hawaiian", "type": "half", "customise": 1, "customisation": {"extra": ["Ham"], "remove": ["Pineapple"], "crust": ""}},
         {"name": "Hawaiian", "type": "half", "customise": 1, "customisation": {"extra": ["Sweetcorn"], "remove": ["Pineapple"], "crust": "Italian Style"}},
-        {"name": "Hawaiian", "type": "full", "customise": 1, "customisation": {"extra": ["Sweetcorn", "Jalapeno Peppers"], "remove": [""], "crust": ""}}
+        {"name": "Hawaiian", "type": "full", "customise": 1, "customisation": {"extra": ["Sweetcorn", "Jalapeno Peppers"], "remove": [""], "crust": "Stuffed Crust®"}},
+        {"name": "Mighty Meaty®", "type": "half", "customise": 1, "customisation": {"extra": ["Smoked Bacon Rashers", "Smoked Bacon Rashers"], "remove": ["Cumberland Sausage"], "crust": ""}},
+        {"name": "Mighty Meaty®", "type": "half", "customise": 0, "customisation": {"extra": ["Sweetcorn", "Jalapeno Peppers"], "remove": [""], "crust": ""}}
         ]
 }
