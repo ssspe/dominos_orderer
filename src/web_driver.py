@@ -3,6 +3,8 @@ import time
 import logging
 
 from selenium.webdriver import ActionChains
+from selenium.webdriver.common.keys import Keys
+
 
 def firefox_web_driver(url_number):
     """
@@ -39,7 +41,7 @@ def wait_for_page_load(webdriver, finder, set_timeout=20):
                 assert False, f"Timed out waiting for element: {finder}"
             continue
 
-def scroll_to_element(webdriver, element):
+def scroll_to_element(webdriver, element, scroll=-150):
     """
     Brings the specified element into view
 
@@ -49,5 +51,14 @@ def scroll_to_element(webdriver, element):
 
     actions = ActionChains(webdriver)
     actions.move_to_element(element).perform()
-    webdriver.execute_script("window.scrollBy(0, -150);")
+    webdriver.execute_script(f"window.scrollBy(0, {scroll});")
     time.sleep(1)
+
+def scroll_to_top(webdriver):
+    """
+    Scrolls to the top of the window. Useful when elements are hidden
+
+    :param webdriver: The Selenium webdriver
+    """
+    webdriver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)
+    time.sleep(5) # Have to sleep to allow dominos server to catch up
