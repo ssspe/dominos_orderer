@@ -116,7 +116,7 @@ def process_pizza_json(webdriver):
     for pizza in data['pizzas']:
         if pizza['type'] == 'full':
             dominos_homepage(webdriver)
-
+            wait_for_page_load(webdriver, "//span[text()='Speciality Pizzas']")
             # Getting a list of pizzas on the website menu page
             pizzas = webdriver.find_elements_by_xpath("//div[@class='product-variant-name-simple']")
             pizza_index = [pizza_text.text for pizza_text in pizzas]
@@ -172,5 +172,5 @@ def process_pizza_json(webdriver):
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.WARNING)
+    logging.basicConfig(level=logging.INFO)
     process_pizza_json("")
