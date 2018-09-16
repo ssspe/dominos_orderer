@@ -34,6 +34,7 @@ def change_crust(webdriver, crust):
         if const.CRUSTS[crust]:
             webdriver.find_element_by_xpath("//i[@class#'icon-chevron-right carousel-control-icon is-clickable']")
         webdriver.find_element_by_xpath(f"//p[contains(text(), '{crust}')]").click()
+        logging.info(f"    {crust}")
 
 
 def click_topping(webdriver, topping):
@@ -64,6 +65,7 @@ def customise_pizza(webdriver, pizza_index, pizza, resource_name):
     """
 
     is_customised = True
+    logging.info(f"Adding pizza {pizza['name']}!")
 
     webdriver.find_elements_by_xpath(f"//button[@resource-name='{resource_name}']")[
         pizza_index.index(pizza['name'])].click()
@@ -73,15 +75,17 @@ def customise_pizza(webdriver, pizza_index, pizza, resource_name):
         change_crust(webdriver, pizza['customisation']['crust'])
 
     for topping in pizza['customisation']['extra']:
-        if not click_topping(webdriver, topping):
-            is_customised = False
-        logging.info(f"Added {topping} to the pizza.")
-
-    for topping in pizza['customisation']['remove']:
-        for clicks in range(2):
+        if topping != "":
             if not click_topping(webdriver, topping):
                 is_customised = False
-        logging.info(f"Removed {topping} from the pizza.")
+            logging.info(f"    + {topping}")
+
+    for topping in pizza['customisation']['remove']:
+        if topping != "":
+            for clicks in range(2):
+                if not click_topping(webdriver, topping):
+                    is_customised = False
+            logging.info(f"    - {topping}")
 
     if not is_customised:
         error_restart(webdriver)
@@ -122,8 +126,6 @@ def process_pizza_json(webdriver):
             pizza_index = [pizza_text.text for pizza_text in pizzas]
 
             if pizza['customise']:
-                logging.info(f"Customizing pizza {pizza['name']}!")
-
                 if pizza['name'] in pizza_index:
                     customise_pizza(webdriver, pizza_index, pizza, "Customise")
                     scroll_to_top(webdriver) # Add to order is at the top of the page
@@ -131,6 +133,7 @@ def process_pizza_json(webdriver):
                     
             else:
                 if pizza['name'] in pizza_index:
+                    logging.info(f"Adding pizza {pizza['name']}!")
                     # Adding the pizza that is at the index of the pizza name to the basket
                     webdriver.find_elements_by_xpath("//button[@resource-name='AddToBasket']")[
                         pizza_index.index(pizza['name'])].click()
@@ -162,7 +165,6 @@ def process_pizza_json(webdriver):
             pizza_index = [pizza.text for pizza in pizzas]
 
             if pizza['name'] in pizza_index:
-                logging.info(f"Customizing pizza {pizza['name']}!")
                 customise_pizza(webdriver, pizza_index, pizza, "Choose")
 
             if first_half:
