@@ -162,6 +162,7 @@ def process_pizza_json(webdriver):
             pizza_index = [pizza.text for pizza in pizzas]
 
             if pizza['name'] in pizza_index:
+                logging.info(f"Customizing pizza {pizza['name']}!")
                 customise_pizza(webdriver, pizza_index, pizza, "Choose")
 
             if first_half:
