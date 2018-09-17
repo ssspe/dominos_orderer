@@ -47,8 +47,7 @@ def click_topping(webdriver, topping):
     """
 
     try:
-        if topping != "":
-            webdriver.find_element_by_xpath(f"//span[text()='{topping}']").click()
+        webdriver.find_element_by_xpath(f"//span[text()='{topping}']").click()
         return True
     except:
         logging.warning("Cant find Topping")
@@ -102,6 +101,7 @@ def dominos_homepage(webdriver):
     webdriver.find_element_by_xpath("//a[@id='menu-selector']").click()
 
     wait_for_page_load(webdriver, f"//a[contains(@title,'{const.HALF_AND_HALF}')]")
+    wait_for_page_load(webdriver, "//span[text()='Speciality Pizzas']")
 
 
 @login
@@ -120,7 +120,6 @@ def process_pizza_json(webdriver):
     for pizza in data['pizzas']:
         if pizza['type'] == 'full':
             dominos_homepage(webdriver)
-            wait_for_page_load(webdriver, "//span[text()='Speciality Pizzas']")
             # Getting a list of pizzas on the website menu page
             pizzas = webdriver.find_elements_by_xpath("//div[@class='product-variant-name-simple']")
             pizza_index = [pizza_text.text for pizza_text in pizzas]
