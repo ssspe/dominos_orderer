@@ -9,19 +9,6 @@ from web_driver import wait_for_page_load, scroll_to_element, scroll_to_top, cli
 import Constants as const
 
 
-def error_restart(webdriver):
-    """
-    Restarts the program after an error, not the cleanest solution but it works
-
-    :param webdriver: Selenium webdriver
-    """
-
-    # For some reason dominos has an overlay that stops selenium from working 20% of the time
-    logging.warning("Error with dominos, trying again.")
-    webdriver.close()
-    process_pizza_json(webdriver)
-
-
 def change_crust(webdriver, crust):
     """
     Change the crust of the pizza
@@ -74,7 +61,6 @@ def customise_pizza(webdriver, pizza_index, pizza, resource_name):
     pizza['customisation']['extra'] = filter(None, pizza['customisation']['extra'])
     pizza['customisation']['remove'] = filter(None, pizza['customisation']['remove'])
 
-    is_customised = True
     logging.info(f"Adding pizza {pizza['name']}!")
 
     webdriver.find_elements_by_xpath(f"//button[@resource-name='{resource_name}']")[
@@ -85,18 +71,13 @@ def customise_pizza(webdriver, pizza_index, pizza, resource_name):
         change_crust(webdriver, pizza['customisation']['crust'])
 
     for topping in pizza['customisation']['extra']:
-        if not click_topping(webdriver, topping):
-            is_customised = False
+        click_topping(webdriver, topping)
         logging.info(f"    + {topping}")
 
     for topping in pizza['customisation']['remove']:
         for clicks in range(2):
-            if not click_topping(webdriver, topping):
-                is_customised = False
+            click_topping(webdriver, topping)
         logging.info(f"    - {topping}")
-
-    if not is_customised:
-        error_restart(webdriver)
 
 
 def dominos_homepage(webdriver):
