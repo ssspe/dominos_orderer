@@ -6,6 +6,7 @@
         {"name": "Mighty Meaty®", "type": "half", "customise": 1, "customisation": {"extra": ["Smoked Bacon Rashers", "Smoked Bacon Rashers"], "remove": ["Cumberland Sausage"], "crust": ""}},
         {"name": "Mighty Meaty®", "type": "half", "customise": 0, "customisation": {"extra": [""], "remove": [""], "crust": ""}},
         {"name": "Vegi Supreme", "type": "half", "customise": 1, "customisation": {"extra": ["Smoked Bacon Rashers"], "remove": ["Red Onions", "Mushrooms"], "crust": ""}},
-        {"name": "Ranch BBQ", "type": "half", "customise": 0, "customisation": {"extra": [""], "remove": [""], "crust": ""}}
+        {"name": "Ranch BBQ", "type": "half", "customise": 0, "customisation": {"extra": [""], "remove": [""], "crust": ""}},
+        {"name": "Ranch BBQ", "type": "full", "customise": 1, "customisation": {"extra": ["Sweetcorn"], "remove": [""], "crust": "Italian Style"}}
         ]
 }
