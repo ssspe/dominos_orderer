@@ -1,10 +1,8 @@
 import json
-import time
 import logging
 
 from decorators import login
 from web_driver import wait_for_page_load, scroll_to_element, scroll_to_top, click_button
-from selenium.webdriver.common.action_chains import ActionChains
 
 import Constants as const
 
@@ -62,6 +60,8 @@ def customise_pizza(webdriver, pizza_index, pizza, resource_name):
     :param extra_topping: Toppings that want adding
     :param remove_topping: Toppings that want removing
     """
+    pizza['customisation']['extra'] = filter(None, pizza['customisation']['extra'])
+    pizza['customisation']['remove'] = filter(None, pizza['customisation']['remove'])
 
     is_customised = True
     logging.info(f"Adding pizza {pizza['name']}!")
@@ -74,17 +74,15 @@ def customise_pizza(webdriver, pizza_index, pizza, resource_name):
         change_crust(webdriver, pizza['customisation']['crust'])
 
     for topping in pizza['customisation']['extra']:
-        if topping != "":
-            if not click_topping(webdriver, topping):
-                is_customised = False
-            logging.info(f"    + {topping}")
+        if not click_topping(webdriver, topping):
+            is_customised = False
+        logging.info(f"    + {topping}")
 
     for topping in pizza['customisation']['remove']:
-        if topping != "":
-            for clicks in range(2):
-                if not click_topping(webdriver, topping):
-                    is_customised = False
-            logging.info(f"    - {topping}")
+        for clicks in range(2):
+            if not click_topping(webdriver, topping):
+                is_customised = False
+        logging.info(f"    - {topping}")
 
     if not is_customised:
         error_restart(webdriver)
@@ -120,29 +118,26 @@ def process_pizza_json(webdriver):
     for pizza in data['pizzas']:
         if pizza['type'] == 'full':
             dominos_homepage(webdriver)
+
             # Getting a list of pizzas on the website menu page
             pizzas = webdriver.find_elements_by_xpath("//div[@class='product-variant-name-simple']")
             pizza_index = [pizza_text.text for pizza_text in pizzas]
 
-            if pizza['customise']:
-                if pizza['name'] in pizza_index:
+            if pizza['name'] in pizza_index:
+                if pizza['customise']:
                     customise_pizza(webdriver, pizza_index, pizza, "Customise")
                     scroll_to_top(webdriver) # Add to order is at the top of the page
                     webdriver.find_element_by_id("add-to-order").click()
-                    
-            else:
-                if pizza['name'] in pizza_index:
-                    logging.info(f"Adding pizza {pizza['name']}!")
+                else:
                     # Adding the pizza that is at the index of the pizza name to the basket
                     webdriver.find_elements_by_xpath("//button[@resource-name='AddToBasket']")[
                         pizza_index.index(pizza['name'])].click()
+                    logging.info(f"Adding pizza {pizza['name']}!")
         else:
             if first_half:
                 dominos_homepage(webdriver)
                 element = webdriver.find_element_by_xpath(f"//a[contains(@title,'{const.HALF_AND_HALF}')]")
-
                 click_button(element)
-
                 wait_for_page_load(webdriver, "//h2[text()='Create Left Half']")
                 webdriver.find_element_by_xpath("//h2[text()='Create Left Half']").click()
                 first_half = not first_half
@@ -150,10 +145,12 @@ def process_pizza_json(webdriver):
                 wait_for_page_load(webdriver, "//h2[text()='Create Right Half']")
                 element = webdriver.find_element_by_xpath("//h2[text()='Create Right Half']")
                 scroll_to_element(webdriver, element)
-                element.click()
+                click_button(element)
                 first_half = not first_half
 
             wait_for_page_load(webdriver, "//p[text()='Create Your Own']")
+
+            # Have to get list of pizzas again, as create your own is in Half and Half section
             pizzas = webdriver.find_elements_by_xpath("//div[@class='product-variant-name-simple']")
             pizza_index = [pizza.text for pizza in pizzas]
 
