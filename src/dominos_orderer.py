@@ -151,7 +151,7 @@ def process_pizza_json(webdriver):
                 scroll_to_top(webdriver)
                 webdriver.find_element_by_id("add-to-order").click()
 
-    input("You're all done here, just pay for your food then you can close the window!")
+    logging.info("You're all done here, just pay for your food then you can close the window!")
 
 
 if __name__ == "__main__":
