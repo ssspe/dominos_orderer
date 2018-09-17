@@ -62,3 +62,18 @@ def scroll_to_top(webdriver):
     """
     webdriver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)
     time.sleep(10) # Have to sleep to allow dominos server to catch up
+
+
+def click_button(element):
+    # This seems to be the only way to make this work reliably, if theres a better way
+    # change it
+    count = 0
+
+    while count < 5:
+        try:
+            element.click()
+            return
+        except:
+            time.sleep(1)
+            count += 1
+            continue

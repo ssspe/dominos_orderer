@@ -3,7 +3,7 @@ import time
 import logging
 
 from decorators import login
-from web_driver import wait_for_page_load, scroll_to_element, scroll_to_top
+from web_driver import wait_for_page_load, scroll_to_element, scroll_to_top, click_button
 from selenium.webdriver.common.action_chains import ActionChains
 
 import Constants as const
@@ -142,14 +142,8 @@ def process_pizza_json(webdriver):
                 dominos_homepage(webdriver)
                 element = webdriver.find_element_by_xpath(f"//a[contains(@title,'{const.HALF_AND_HALF}')]")
 
-                # This seems to be the only way to make this work reliably, if theres a better way
-                # change it. Currently this clicks the half and half button using js then, if it fails,
-                # using python via selenium.
-                try:
-                    element.click()
-                except:
-                    time.sleep(1)
-                    ActionChains(webdriver).move_to_element(element).click().perform()
+                click_button(element)
+
                 wait_for_page_load(webdriver, "//h2[text()='Create Left Half']")
                 webdriver.find_element_by_xpath("//h2[text()='Create Left Half']").click()
                 first_half = not first_half
