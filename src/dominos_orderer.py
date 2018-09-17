@@ -1,6 +1,8 @@
 import json
 import logging
 
+from pip._vendor import requests
+
 from decorators import login
 from web_driver import wait_for_page_load, scroll_to_element, scroll_to_top, click_button
 
@@ -51,6 +53,15 @@ def click_topping(webdriver, topping):
         logging.warning("Cant find Topping")
         return False
 
+def get_json():
+    if const.USING_NETWORK_JSON:
+        pizza = requests.get(url=const.SERVER_URL)
+        data = json.load(pizza)
+    else:
+        with open("pizza.json", encoding='utf-8') as read_file:
+            data = json.load(read_file)
+            
+    return data
 
 def customise_pizza(webdriver, pizza_index, pizza, resource_name):
     """
@@ -111,9 +122,7 @@ def process_pizza_json(webdriver):
     """
 
     first_half = True
-
-    with open("pizza.json", encoding='utf-8') as read_file:
-        data = json.load(read_file)
+    data = get_json()
 
     for pizza in data['pizzas']:
         if pizza['type'] == 'full':
