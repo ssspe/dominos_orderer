@@ -50,6 +50,10 @@ def get_json():
             pizza_info['name'] = data[username]['standard']
             pizza_info['type'] = 'half'
             pizza_info['customise'] = 1
+
+            data[username]["changes"]['toppings']['additions'].append("")
+            data[username]["changes"]['toppings']['removals'].append("")
+
             pizza_info['customisation'] = {"extra": data[username]["changes"]['toppings']['additions'], "remove": data[username]["changes"]['toppings']['removals'], "crust": ""}
             pizza['pizzas'].append(pizza_info)
 
@@ -154,7 +158,8 @@ def process_pizza_json(webdriver):
             # Have to get list of pizzas again, as create your own is in Half and Half section
             pizzas = webdriver.find_elements_by_xpath("//div[@class='product-variant-name-simple']")
             pizza_index = [pizza.text for pizza in pizzas]
-
+            print(pizza['name'])
+            print(pizza_index)
             if pizza['name'] in pizza_index:
                 customise_pizza(webdriver, pizza_index, pizza, "Choose")
 
