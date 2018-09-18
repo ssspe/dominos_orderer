@@ -34,10 +34,11 @@ def click_topping(webdriver, topping):
     """
 
     try:
-        webdriver.find_element_by_xpath(f"//span[text()='{topping}']").click()
+        if topping != '':
+            webdriver.find_element_by_xpath(f"//span[text()='{topping}']").click()
         return True
     except:
-        logging.warning("Cant find Topping")
+        logging.warning(f"Cant find Topping {topping}")
         return False
 
 def get_json():
@@ -56,8 +57,6 @@ def get_json():
 
             pizza_info['customisation'] = {"extra": data[username]["changes"]['toppings']['additions'], "remove": data[username]["changes"]['toppings']['removals'], "crust": ""}
             pizza['pizzas'].append(pizza_info)
-
-        print(pizza)
         return pizza
     else:
         with open("pizza.json", encoding='utf-8') as read_file:
@@ -158,8 +157,6 @@ def process_pizza_json(webdriver):
             # Have to get list of pizzas again, as create your own is in Half and Half section
             pizzas = webdriver.find_elements_by_xpath("//div[@class='product-variant-name-simple']")
             pizza_index = [pizza.text for pizza in pizzas]
-            print(pizza['name'])
-            print(pizza_index)
             if pizza['name'] in pizza_index:
                 customise_pizza(webdriver, pizza_index, pizza, "Choose")
 
