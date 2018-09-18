@@ -42,8 +42,19 @@ def click_topping(webdriver, topping):
 
 def get_json():
     if const.USING_NETWORK_JSON:
-        pizza = requests.get(url=const.SERVER_URL)
-        data = json.load(pizza)
+        pizza = requests.get(url=const.SERVER_URL).json()
+        data = pizza['orders']
+        pizza = {"pizzas": []}
+        for username in data:
+            pizza_info = {}
+            pizza_info['name'] = data[username]['standard']
+            pizza_info['type'] = 'half'
+            pizza_info['customise'] = 1
+            pizza_info['customisation'] = {"extra": data[username]["changes"]['toppings']['additions'], "remove": data[username]["changes"]['toppings']['removals'], "crust": ""}
+            pizza['pizzas'].append(pizza_info)
+
+        print(pizza)
+        return pizza
     else:
         with open("pizza.json", encoding='utf-8') as read_file:
             data = json.load(read_file)
