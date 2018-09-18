@@ -34,30 +34,38 @@ def click_topping(webdriver, topping):
     """
 
     try:
-        if topping != '':
-            webdriver.find_element_by_xpath(f"//span[text()='{topping}']").click()
+        webdriver.find_element_by_xpath(f"//span[text()='{topping}']").click()
         return True
     except:
         logging.warning(f"Cant find Topping {topping}")
         return False
 
 def get_json():
+    """
+    Process the JSON either from a server or from a file
+
+    :return: Processed pizza json
+    """
+
     if const.USING_NETWORK_JSON:
         pizza = requests.get(url=const.SERVER_URL).json()
         data = pizza['orders']
         pizza = {"pizzas": []}
         for username in data:
-            pizza_info = {}
-            pizza_info['name'] = data[username]['standard']
-            pizza_info['type'] = data[username]['size']
-            pizza_info['customise'] = 1
-
-            data[username]["changes"]['toppings']['additions'].append("")
-            data[username]["changes"]['toppings']['removals'].append("")
             if data[username]["changes"]['base'] != False:
                 data[username]["changes"]['toppings']['additions'].append(data[username]["changes"]['base'])
 
-            pizza_info['customisation'] = {"extra": data[username]["changes"]['toppings']['additions'], "remove": data[username]["changes"]['toppings']['removals'], "crust": ""}
+            pizza_info = {"pizzas":
+                              [
+                                  {'name': data[username]['standard'],
+                                  'type': data[username]['size'],
+                                  'customise': 1,
+                                  'customisation': {
+                                      "extra": data[username]["changes"]['toppings']['additions'],
+                                      "remove": data[username]["changes"]['toppings']['removals'],
+                                      "crust": ""
+                          }}]}
+
             pizza['pizzas'].append(pizza_info)
         return pizza
     else:
@@ -87,6 +95,8 @@ def customise_pizza(webdriver, pizza_index, pizza, resource_name):
         change_crust(webdriver, pizza['customisation']['crust'])
 
     for topping in pizza['customisation']['extra']:
+        if topping == const.DOMINOS_PIZZA_SAUCE:
+            continue
         click_topping(webdriver, topping)
         logging.info(f"    + {topping}")
 
@@ -139,7 +149,7 @@ def process_pizza_json(webdriver):
                     webdriver.find_elements_by_xpath("//button[@resource-name='AddToBasket']")[
                         pizza_index.index(pizza['name'])].click()
                     logging.info(f"Adding pizza {pizza['name']}!")
-        else:
+        elif pizza['type'] == 'half':
             if first_half:
                 dominos_homepage(webdriver)
                 element = webdriver.find_element_by_xpath(f"//a[contains(@title,'{const.HALF_AND_HALF}')]")
@@ -165,6 +175,8 @@ def process_pizza_json(webdriver):
             if first_half:
                 scroll_to_top(webdriver)
                 webdriver.find_element_by_id("add-to-order").click()
+        else:
+            logging.warning(f"Unknown pizza: {pizza['name']}")
 
     logging.info("You're all done here, just pay for your food then you can close the window!")
 

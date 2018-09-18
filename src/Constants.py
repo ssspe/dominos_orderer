@@ -5,3 +5,4 @@ CRUSTS = {"Stuffed Crust®":False,
 DOMINOS_WEBSITE = "https://www.dominos.co.uk/menu"
 USING_NETWORK_JSON = False
 SERVER_URL = "http://zc060/pizza/data/orders.json"
+DOMINOS_PIZZA_SAUCE = "Domino's Own Tomato Sauce"

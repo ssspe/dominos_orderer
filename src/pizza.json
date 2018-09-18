@@ -1,12 +1,12 @@
 {
     "pizzas": [
-        {"name": "Hawaiian", "type": "half", "customise": 1, "customisation": {"extra": ["Ham"], "remove": ["Pineapple"], "crust": ""}},
-        {"name": "Hawaiian", "type": "half", "customise": 1, "customisation": {"extra": ["Sweetcorn"], "remove": ["Pineapple"], "crust": "Italian Style"}},
-        {"name": "Hawaiian", "type": "whole", "customise": 1, "customisation": {"extra": ["Sweetcorn", "Jalapeno Peppers"], "remove": [""], "crust": "Stuffed Crust®"}},
+        {"name": "Ham & Pineapple", "type": "half", "customise": 1, "customisation": {"extra": ["Ham"], "remove": ["Pineapple"], "crust": ""}},
+        {"name": "Ham & Pineapple", "type": "half", "customise": 1, "customisation": {"extra": ["Sweetcorn"], "remove": ["Pineapple"], "crust": "Italian Style"}},
+        {"name": "Ham & Pineapple", "type": "whole", "customise": 1, "customisation": {"extra": ["Sweetcorn", "Jalapeno Peppers"], "remove": [], "crust": "Stuffed Crust®"}},
         {"name": "Mighty Meaty®", "type": "half", "customise": 1, "customisation": {"extra": ["Smoked Bacon Rashers", "Smoked Bacon Rashers"], "remove": ["Cumberland Sausage"], "crust": ""}},
-        {"name": "Mighty Meaty®", "type": "half", "customise": 0, "customisation": {"extra": [""], "remove": [""], "crust": ""}},
+        {"name": "Mighty Meaty®", "type": "half", "customise": 0, "customisation": {"extra": [], "remove": [], "crust": ""}},
         {"name": "Vegi Supreme", "type": "half", "customise": 1, "customisation": {"extra": ["Smoked Bacon Rashers"], "remove": ["Red Onions", "Mushrooms"], "crust": ""}},
-        {"name": "Ranch BBQ", "type": "half", "customise": 0, "customisation": {"extra": [""], "remove": [""], "crust": ""}},
-        {"name": "Ranch BBQ", "type": "whole", "customise": 1, "customisation": {"extra": ["Sweetcorn"], "remove": [""], "crust": "Italian Style"}}
+        {"name": "Ranch BBQ", "type": "half", "customise": 0, "customisation": {"extra": [], "remove": [], "crust": ""}},
+        {"name": "Ranch BBQ", "type": "whole", "customise": 1, "customisation": {"extra": ["Sweetcorn"], "remove": [], "crust": "Italian Style"}}
         ]
 }
