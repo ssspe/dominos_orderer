@@ -49,11 +49,13 @@ def get_json():
         for username in data:
             pizza_info = {}
             pizza_info['name'] = data[username]['standard']
-            pizza_info['type'] = 'half'
+            pizza_info['type'] = data[username]['size']
             pizza_info['customise'] = 1
 
             data[username]["changes"]['toppings']['additions'].append("")
             data[username]["changes"]['toppings']['removals'].append("")
+            if data[username]["changes"]['base'] != False:
+                data[username]["changes"]['toppings']['additions'].append(data[username]["changes"]['base'])
 
             pizza_info['customisation'] = {"extra": data[username]["changes"]['toppings']['additions'], "remove": data[username]["changes"]['toppings']['removals'], "crust": ""}
             pizza['pizzas'].append(pizza_info)
@@ -120,7 +122,8 @@ def process_pizza_json(webdriver):
     data = get_json()
 
     for pizza in data['pizzas']:
-        if pizza['type'] == 'full':
+        print(pizza)
+        if pizza['type'] == 'whole':
             dominos_homepage(webdriver)
 
             # Getting a list of pizzas on the website menu page

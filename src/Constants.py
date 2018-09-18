@@ -4,4 +4,4 @@ CRUSTS = {"Stuffed Crust®":False,
           "Thin & Crispy":True}
 DOMINOS_WEBSITE = "https://www.dominos.co.uk/menu"
 USING_NETWORK_JSON = True
-SERVER_URL = "http://zc060/spencerspizza/data/orders.json"
+SERVER_URL = "http://zc060/pizza/data/orders.json"
