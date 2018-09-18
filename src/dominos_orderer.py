@@ -122,7 +122,6 @@ def process_pizza_json(webdriver):
     data = get_json()
 
     for pizza in data['pizzas']:
-        print(pizza)
         if pizza['type'] == 'whole':
             dominos_homepage(webdriver)
 
