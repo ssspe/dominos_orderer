@@ -55,16 +55,14 @@ def get_json():
             if data[username]["changes"]['base'] != False:
                 data[username]["changes"]['toppings']['additions'].append(data[username]["changes"]['base'])
 
-            pizza_info = {"pizzas":
-                              [
-                                  {'name': data[username]['standard'],
+            pizza_info = {'name': data[username]['standard'],
                                   'type': data[username]['size'],
                                   'customise': 1,
                                   'customisation': {
                                       "extra": data[username]["changes"]['toppings']['additions'],
                                       "remove": data[username]["changes"]['toppings']['removals'],
                                       "crust": ""
-                          }}]}
+                          }}
 
             pizza['pizzas'].append(pizza_info)
         pizza["pizzas"].sort(key=lambda x: x['type']) # Sorting the pizzas into halfs and wholes
@@ -86,7 +84,7 @@ def customise_pizza(webdriver, pizza_index, pizza, resource_name):
     pizza['customisation']['extra'] = filter(None, pizza['customisation']['extra'])
     pizza['customisation']['remove'] = filter(None, pizza['customisation']['remove'])
 
-    logging.info(f"Adding pizza {pizza['name']}!")
+    logging.info(f"Adding pizza {pizza['name']}! ({pizza['type']})")
 
     webdriver.find_elements_by_xpath(f"//button[@resource-name='{resource_name}']")[
         pizza_index.index(pizza['name'])].click()
@@ -161,7 +159,7 @@ def process_pizza_json(webdriver):
             else:
                 wait_for_page_load(webdriver, "//h2[text()='Create Right Half']")
                 element = webdriver.find_element_by_xpath("//h2[text()='Create Right Half']")
-                scroll_to_element(webdriver, element)
+                #scroll_to_element(webdriver, element)
                 click_button(element)
                 first_half = not first_half
 
