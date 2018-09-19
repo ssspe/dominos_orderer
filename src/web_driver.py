@@ -19,7 +19,7 @@ def firefox_web_driver(url_number):
     return web
 
 # noinspection PyBroadException
-def wait_for_page_load(webdriver, finder, set_timeout=20):
+def wait_for_page_load(webdriver, finder, set_timeout=40):
     """
     Waits till a specific element is displayed before returning from an infinite loop.
 
