@@ -67,6 +67,7 @@ def get_json():
                           }}]}
 
             pizza['pizzas'].append(pizza_info)
+        pizza["pizzas"].sort(key=lambda x: x['type']) # Sorting the pizzas into halfs and wholes
         return pizza
     else:
         with open("pizza.json", encoding='utf-8') as read_file:
