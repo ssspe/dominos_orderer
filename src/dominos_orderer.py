@@ -1,6 +1,7 @@
 import json
 import logging
-
+import os
+import sys
 import requests
 
 from decorators import login
@@ -181,5 +182,6 @@ def process_pizza_json(webdriver):
 
 
 if __name__ == "__main__":
+    sys.path.append(os.path.dirname(os.path.realpath(__file__)))
     logging.basicConfig(level=logging.INFO)
     process_pizza_json("")
