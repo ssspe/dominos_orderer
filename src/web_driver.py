@@ -61,7 +61,7 @@ def scroll_to_top(webdriver):
     :param webdriver: The Selenium webdriver
     """
     webdriver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)
-    time.sleep(10) # Have to sleep to allow dominos server to catch up
+    time.sleep(1) # Have to sleep to allow dominos server to catch up
 
 
 def click_button(element):
