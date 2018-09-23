@@ -160,7 +160,7 @@ def process_pizza_json(webdriver):
             else:
                 wait_for_page_load(webdriver, "//h2[text()='Create Right Half']")
                 element = webdriver.find_element_by_xpath("//h2[text()='Create Right Half']")
-                #scroll_to_element(webdriver, element)
+                scroll_to_element(webdriver, element)
                 click_button(element)
                 first_half = not first_half
 
@@ -182,6 +182,6 @@ def process_pizza_json(webdriver):
 
 
 if __name__ == "__main__":
-    sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+    sys.path.append(os.path.realpath(os.getcwd()))
     logging.basicConfig(level=logging.INFO)
     process_pizza_json("")
