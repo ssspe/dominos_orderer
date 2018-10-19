@@ -49,10 +49,13 @@ def scroll_to_element(webdriver, element, scroll=-150):
     :input element: The element to scroll to
     """
 
-    actions = ActionChains(webdriver)
-    actions.move_to_element(element).perform()
-    webdriver.execute_script(f"window.scrollBy(0, {scroll});")
-    time.sleep(1)
+    try:
+        actions = ActionChains(webdriver)
+        actions.move_to_element(element).perform()
+        webdriver.execute_script(f"window.scrollBy(0, {scroll});")
+        time.sleep(1)
+    except:
+        logging.warning(f"Could not scroll to element: {element}")
 
 def scroll_to_top(webdriver):
     """
