@@ -87,8 +87,10 @@ def customise_pizza(webdriver, pizza_index, pizza, resource_name):
 
     logging.info(f"Adding pizza {pizza['name']}! ({pizza['type']})")
 
-    webdriver.find_elements_by_xpath(f"//button[@resource-name='{resource_name}']")[
-        pizza_index.index(pizza['name'])].click()
+    e = webdriver.find_elements_by_xpath(f"//button[@resource-name='{resource_name}']")[
+        pizza_index.index(pizza['name'])]
+    scroll_to_element(webdriver, e)
+    e.click()
     wait_for_page_load(webdriver, "//span[text()='Chicken Breast Strips']")
 
     if pizza['customisation']['crust'] != "":
@@ -179,6 +181,9 @@ def process_pizza_json(webdriver):
             logging.warning(f"Unknown pizza: {pizza['name']}")
 
     logging.info("You're all done here, just pay for your food then you can close the window!")
+    track = webdriver.find_elements_by_xpath("//a[@class='btn-thankyou-track']")
+    wait_for_page_load(webdriver, track, 600)
+    track.click()
 
 
 if __name__ == "__main__":

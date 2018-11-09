@@ -13,7 +13,12 @@ def firefox_web_driver(url_number):
     :param url_number: The URL like to dominos
     :return: The driver object
     """
-    driver = webdriver.Firefox()
+    opts = webdriver.ChromeOptions()
+    opts.add_argument('--safebrowsing-disable-download-protection')
+    opts.add_argument('--window-size=1280,936')
+    opts.add_experimental_option("detach", True)
+
+    driver = webdriver.Chrome(options=opts)
     web = driver
     web.get(url_number)
     return web
@@ -63,8 +68,9 @@ def scroll_to_top(webdriver):
 
     :param webdriver: The Selenium webdriver
     """
+    time.sleep(2)
     webdriver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)
-    time.sleep(10) # Have to sleep to allow dominos server to catch up
+    time.sleep(5) # Have to sleep to allow dominos server to catch up
 
 
 def click_button(element):
